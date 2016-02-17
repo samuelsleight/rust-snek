@@ -4,6 +4,7 @@ version = "0.1.1"
 authors = ["Samuel Sleight <samuel.sleight@gmail.com>"]
 description = "A simple library and macro for using dynamic libraries"
 repository = "https://github.com/YeyaSwizaw/rust-snek"
+documentation = "http://www.samuelsleight.co.uk/rust-docs/snek/snek/"
 keywords = ["dynamic", "library", "snek", "load", "shared"]
 license = "Apache-2.0"
 
