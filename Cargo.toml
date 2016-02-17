@@ -1,0 +1,11 @@
+[package]
+name = "snek"
+version = "0.1.0"
+authors = ["Samuel Sleight <samuel.sleight@gmail.com>"]
+description = "A simple library and macro for using dynamic libraries"
+repository = "https://github.com/YeyaSwizaw/rust-snek"
+keywords = ["dynamic", "library", "snek", "load", "shared"]
+license = "Apache-2.0"
+
+[dependencies]
+libc = "0.2.7"
