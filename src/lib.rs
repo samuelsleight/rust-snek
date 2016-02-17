@@ -16,6 +16,34 @@
 //  limitations under the License.
 //////////////////////////////////////////////////////////////////////////////
 
+//! This library provides a convenient interface for loading dynamic libraries
+//! at runtime, and for retrieving symbols from them. The recommended use is
+//! via the [`snek!`](macro.snek!.html) macro, which defines a structure which
+//! loads symbols on construction and has methods for each one, however it is
+//! also possible to manually load libraries and symbols using a [`Snek`](struct.Snek.html)
+//! instance.
+//!
+//! # Example
+//! ```
+//! #[macro_use] extern crate snek;
+//! extern crate libc;
+//!
+//! use libc::c_int;
+//!
+//! snek! {
+//!     Example {
+//!         hello: () -> (),
+//!         add: (x: c_int, y: c_int) -> c_int
+//!     }
+//! }
+//!
+//! fn main() {
+//!     if let Ok(example) = Example::load("libexample.so") {
+//!         example.hello();
+//!         println!("2 + 4 = {}", example.add(2, 4));
+//!     }
+//! }
+
 extern crate libc;
 
 pub use snek::{Snek, load_library, load_symbol, drop_library};
@@ -24,10 +52,12 @@ pub use symbol::Symbol;
 mod snek;
 mod symbol;
 
+/// This enum stores information about the error returned when loading a library
+/// or symbol fails. On unix platforms, it hold the result of `dlerror()`.
 #[derive(Debug)]
 pub enum Error {
-    LibraryLoadError,
-    SymbolLoadError
+    LibraryLoadError(String),
+    SymbolLoadError(String)
 }
 
 /// This macro is used to generate a struct that wraps a dynamic library with

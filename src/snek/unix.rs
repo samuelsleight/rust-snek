@@ -23,13 +23,14 @@ extern crate libc;
 use ::Error;
 
 use std::path::Path;
-use std::ffi::CString;
+use std::ffi::{CStr, CString};
 use libc::{c_char, c_int, c_void};
 
 extern {
     fn dlopen(path: *mut c_char, mode: c_int) -> *mut c_void;
     fn dlclose(handle: *mut c_void);
     fn dlsym(handle: *mut c_void, symbol: *mut c_char) -> *mut c_void;
+    fn dlerror() -> *mut c_char;
 }
 
 pub fn load_library<P>(path: P) -> Result<*mut c_void, Error> where P: AsRef<Path> {
@@ -37,7 +38,8 @@ pub fn load_library<P>(path: P) -> Result<*mut c_void, Error> where P: AsRef<Pat
     let result = unsafe { dlopen(path_string.into_raw() as *mut c_char, 1) };
 
     if result == (0 as *mut libc::c_void) {
-        Err(Error::LibraryLoadError)
+        let error = unsafe { CStr::from_ptr(dlerror()).to_string_lossy().into_owned() };
+        Err(Error::LibraryLoadError(error))
     } else {
         Ok(result)
     }
@@ -48,7 +50,8 @@ pub fn load_symbol(handle: *mut c_void, symbol: &str) -> Result<*mut c_void, Err
     let result = unsafe { dlsym(handle, string.into_raw()) };
 
     if result == (0 as *mut libc::c_void) {
-        Err(Error::SymbolLoadError)
+        let error = unsafe { CStr::from_ptr(dlerror()).to_string_lossy().into_owned() };
+        Err(Error::SymbolLoadError(error))
     } else {
         Ok(result)
     }
