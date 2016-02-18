@@ -26,8 +26,7 @@
 //! # Safety
 //! There is no way of verifying the type of loaded symbols, so both methods of
 //! using them assume that the given type is correct - this library should be used
-//! very carefully. Also consider it unstable at the moment, I mostly have no idea
-//! what I am doing.
+//! very carefully. Consider everything very unstable at the moment.
 //!
 //! # Example
 //! ```
@@ -45,8 +44,8 @@
 //!
 //! fn main() {
 //!     if let Ok(example) = Example::load("libexample.so") {
-//!         example.hello();
-//!         println!("2 + 4 = {}", example.add(2, 4));
+//!         unsafe { example.hello() };
+//!         println!("2 + 4 = {}", unsafe { example.add(2, 4) });
 //!     }
 //! }
 
@@ -71,12 +70,14 @@ pub enum Error {
 /// from the library when an instance of the struct is constructed, and can be
 /// called via functions of the same name attached to the struct.
 ///
-/// As with [`Symbol::with`](struct.Symbol.html#method.with), there is no way
-/// of verifying the types of the functions so care should be taken to ensure
-/// they are correct.
-///
 /// In the same way as a [`Snek`](struct.Snek.html) instance, when an instance
 /// of a struct defined by this macro is dropped, the library is unloaded.
+///
+/// # Safety
+/// As with [`Symbol::with`](struct.Symbol.html#method.with), there is no way
+/// of verifying the types of the functions so care should be taken to ensure
+/// they are correct. All the imported functions will be unsafe as a result
+/// of this.
 ///
 /// # Example
 /// This example loads the same function as given in the [`Snek`](struct.Snek.html)
@@ -94,7 +95,7 @@ pub enum Error {
 ///
 /// fn main() {
 ///     if let Ok(example) = Example::load("libexample.so") {
-///         println!("{}", example.add(3, 7))
+///         println!("{}", unsafe { example.add(3, 7) })
 ///     }
 /// }
 /// ```
@@ -139,7 +140,7 @@ macro_rules! snek {
                 })
             }
 
-            $(pub fn $symbol(&self, $($pn: $pt),*) -> $ot {
+            $(pub unsafe fn $symbol(&self, $($pn: $pt),*) -> $ot {
                 self.$symbol.with(|f: extern fn($($pt),*) -> $ot| f($($pn),*))
             })*
         }

@@ -47,6 +47,10 @@ impl<'a> Symbol<'a> {
     /// that the symbol is of the specified type, so this function should be used
     /// with care.
     ///
+    /// # Safety
+    /// When calling this function, ensure the type of the symbol is actually the
+    /// type you say it is.
+    ///
     /// # Example
     /// ```
     /// # extern crate libc;
@@ -57,15 +61,15 @@ impl<'a> Symbol<'a> {
     /// # match Snek::load("libexample.so") {
     /// #    Ok(snek) => match snek.symbol("add") {
     /// #        Ok(symbol) => {
-    /// let result: c_int =  symbol.with(|add: extern fn(c_int, c_int) -> c_int| add(3, 7));
+    /// let result: c_int =  unsafe { symbol.with(|add: extern fn(c_int, c_int) -> c_int| add(3, 7)) };
     /// #       },
     /// #       _ => ()
     /// #   },
     /// #   _ => ()
     /// # }
     /// # }
-    pub fn with<F, T, U>(&self, f: F) -> U where F: Fn(T) -> U {
-        let value = unsafe { ptr::read(&self.symbol as *const _ as *const T) };
+    pub unsafe fn with<F, T, U>(&self, f: F) -> U where F: Fn(T) -> U {
+        let value = ptr::read(&self.symbol as *const _ as *const T);
         f(value)
     }
 }

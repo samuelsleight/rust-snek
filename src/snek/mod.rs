@@ -54,9 +54,9 @@ mod windows;
 /// # fn main() {
 /// match Snek::load("libexample.so") {
 ///     Ok(snek) => match snek.symbol("add") {
-///         Ok(symbol) => println!("{}", symbol.with(
+///         Ok(symbol) => println!("{}", unsafe { symbol.with(
 ///             |add: extern fn(c_int, c_int) -> c_int| add(3, 7)
-///         )),
+///         ) }),
 ///
 ///         _ => ()
 ///     },
