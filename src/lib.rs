@@ -23,6 +23,12 @@
 //! also possible to manually load libraries and symbols using a [`Snek`](struct.Snek.html)
 //! instance.
 //!
+//! # Safety
+//! There is no way of verifying the type of loaded symbols, so both methods of
+//! using them assume that the given type is correct - this library should be used
+//! very carefully. Also consider it unstable at the moment, I mostly have no idea
+//! what I am doing.
+//!
 //! # Example
 //! ```
 //! #[macro_use] extern crate snek;
@@ -64,6 +70,10 @@ pub enum Error {
 /// generated loading code. Each defined function will be loaded as a symbol
 /// from the library when an instance of the struct is constructed, and can be
 /// called via functions of the same name attached to the struct.
+///
+/// As with [`Symbol::with`](struct.Symbol.html#method.with), there is no way
+/// of verifying the types of the functions so care should be taken to ensure
+/// they are correct.
 ///
 /// In the same way as a [`Snek`](struct.Snek.html) instance, when an instance
 /// of a struct defined by this macro is dropped, the library is unloaded.

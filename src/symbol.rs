@@ -34,7 +34,7 @@ pub struct Symbol<'a> {
 impl<'a> Symbol<'a> {
     /// Construct a new `Symbol` wrapping a symbol. This should not be used
     /// manually, however is public to allow access from the 
-    /// [`snek!`](macro.snek!.heml) macro.
+    /// [`snek!`](macro.snek!.html) macro.
     pub fn new(symbol: *mut c_void) -> Symbol<'a> {
         Symbol {
             symbol: symbol,
