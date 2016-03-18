@@ -35,7 +35,7 @@ extern {
 
 pub fn load_library<P>(path: P) -> Result<*mut c_void, Error> where P: AsRef<Path> {
     let path_string = CString::new(path.as_ref().to_string_lossy().as_ref()).unwrap();
-    let result = unsafe { dlopen(path_string.into_raw() as *mut c_char, 1) };
+    let result = unsafe { dlopen(path_string.as_ptr() as *mut c_char, 1) };
 
     if result == (0 as *mut libc::c_void) {
         let error = unsafe { CStr::from_ptr(dlerror()).to_string_lossy().into_owned() };
@@ -47,7 +47,7 @@ pub fn load_library<P>(path: P) -> Result<*mut c_void, Error> where P: AsRef<Pat
 
 pub fn load_symbol(handle: *mut c_void, symbol: &str) -> Result<*mut c_void, Error> {
     let string = CString::new(symbol).unwrap();
-    let result = unsafe { dlsym(handle, string.into_raw()) };
+    let result = unsafe { dlsym(handle, string.as_ptr()) };
 
     if result == (0 as *mut libc::c_void) {
         let error = unsafe { CStr::from_ptr(dlerror()).to_string_lossy().into_owned() };

@@ -51,6 +51,11 @@
 
 extern crate libc;
 
+#[cfg(windows)]
+extern crate winapi;
+#[cfg(windows)]
+extern crate kernel32;
+
 pub use snek::{Snek, load_library, load_symbol, drop_library};
 pub use symbol::Symbol;
 
