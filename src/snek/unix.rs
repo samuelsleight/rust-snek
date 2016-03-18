@@ -47,7 +47,7 @@ pub fn load_library<P>(path: P) -> Result<*mut c_void, Error> where P: AsRef<Pat
 
 pub fn load_symbol(handle: *mut c_void, symbol: &str) -> Result<*mut c_void, Error> {
     let string = CString::new(symbol).unwrap();
-    let result = unsafe { dlsym(handle, string.as_ptr()) };
+    let result = unsafe { dlsym(handle, string.as_ptr() as *mut c_char) };
 
     if result == (0 as *mut libc::c_void) {
         let error = unsafe { CStr::from_ptr(dlerror()).to_string_lossy().into_owned() };

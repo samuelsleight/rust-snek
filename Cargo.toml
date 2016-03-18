@@ -1,6 +1,6 @@
 [package]
 name = "snek"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Samuel Sleight <samuel.sleight@gmail.com>"]
 description = "A simple library and macro for using dynamic libraries"
 repository = "https://github.com/YeyaSwizaw/rust-snek"
